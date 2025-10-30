@@ -1,0 +1,380 @@
+:root {
+  color-scheme: light;
+  --bg: #e3f2fd;
+  --text: #1f2a44;
+  --card: rgba(255, 255, 255, 0.82);
+  --shadow: 0 18px 35px -22px rgba(15, 42, 83, 0.45);
+  --fear: #ff9f1c;
+  --sadness: #104a8e;
+  --guilt: #ffd166;
+  --anger: #ff2d2d;
+  --desire: #7f1734;
+  --depression: #4d4f58;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.hero {
+  position: relative;
+  padding: clamp(3rem, 8vw, 6rem) 1.5rem 4rem;
+  overflow: hidden;
+}
+
+.hero__diagonal {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.85) 40%, rgba(255, 255, 255, 0.85) 100%);
+  z-index: 0;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  max-width: 400px;
+}
+
+.hero h1 {
+  font-family: "Crimson Pro", "Times New Roman", serif;
+  font-size: clamp(2.8rem, 7vw, 4.2rem);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.clusters {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3.5rem;
+  padding: 0 2rem 4rem;
+  max-width: 1350px;
+  width: 100%;
+  margin: 0 auto 4.5rem;
+  justify-items: center;
+  align-items: start;
+}
+
+.cluster {
+  position: relative;
+  perspective: 1500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cluster__bubble {
+  width: min(100%, 340px);
+  aspect-ratio: 1 / 1;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: var(--shadow);
+  color: inherit;
+  background: var(--card);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.cluster__bubble::before,
+.cluster__bubble::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.8;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.cluster__bubble::before {
+  width: 50%;
+  height: 50%;
+  inset: auto auto 10% 5%;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.cluster__bubble::after {
+  width: 40%;
+  height: 40%;
+  inset: 10% 12% auto auto;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.cluster__bubble span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  z-index: 1;
+}
+
+.cluster[data-expanded="true"] .cluster__bubble {
+  transform: scale(1.05);
+  box-shadow: 0 25px 55px -28px rgba(16, 26, 52, 0.6);
+}
+
+.cluster[data-expanded="true"] .cluster__bubble::before,
+.cluster[data-expanded="true"] .cluster__bubble::after {
+  opacity: 0;
+}
+
+.cluster__sub {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-12px) scale(0.98);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  margin-top: 1.5rem;
+  padding: 0;
+  width: min(100%, 380px);
+}
+
+.cluster[data-expanded="true"] .cluster__sub {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.cluster__heading {
+  margin: 0 0 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.cluster__cloud {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  justify-items: center;
+  gap: 1.4rem;
+  padding: 1.75rem 1.25rem 1.5rem;
+  border-radius: 34px;
+  box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.cluster__cloud::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.32), transparent 55%),
+    radial-gradient(circle at 80% 25%, rgba(255, 255, 255, 0.18), transparent 65%);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.sub-bubble {
+  --bubble-size: 110px;
+  position: relative;
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 18px 35px -26px rgba(16, 26, 52, 0.65);
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
+}
+
+.sub-bubble::before {
+  content: "";
+  position: absolute;
+  inset: 14% auto auto 18%;
+  width: 38%;
+  height: 38%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  filter: blur(0.5px);
+}
+
+.sub-bubble:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 25px 55px -24px rgba(16, 26, 52, 0.75);
+}
+
+.cluster[data-color="fear"] .cluster__bubble {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), transparent 65%), var(--fear);
+}
+
+.cluster[data-color="sadness"] .cluster__bubble {
+  background: radial-gradient(circle at 70% 25%, rgba(255, 255, 255, 0.6), transparent 70%), var(--sadness);
+  color: #f0f7ff;
+}
+
+.cluster[data-color="guilt"] .cluster__bubble {
+  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.75), transparent 68%), var(--guilt);
+}
+
+.cluster[data-color="anger"] .cluster__bubble {
+  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.65), transparent 65%), var(--anger);
+  color: #ffeaea;
+}
+
+.cluster[data-color="desire"] .cluster__bubble {
+  background: radial-gradient(circle at 65% 20%, rgba(255, 255, 255, 0.55), transparent 70%), var(--desire);
+  color: #f8e7ef;
+}
+
+.cluster[data-color="depression"] .cluster__bubble {
+  background: radial-gradient(circle at 45% 30%, rgba(255, 255, 255, 0.35), transparent 70%),
+    linear-gradient(145deg, #60636d, #3b3d45);
+  color: #f7f8fa;
+}
+
+.cluster[data-color="depression"] .cluster__cloud {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+  color: #f2f2f5;
+}
+
+.cluster[data-color="fear"] .cluster__cloud {
+  background: linear-gradient(145deg, rgba(255, 198, 109, 0.4), rgba(255, 170, 54, 0.18));
+}
+
+.cluster[data-color="sadness"] .cluster__cloud {
+  background: linear-gradient(150deg, rgba(16, 74, 142, 0.35), rgba(16, 74, 142, 0.15));
+  color: #f0f6ff;
+}
+
+.cluster[data-color="guilt"] .cluster__cloud {
+  background: linear-gradient(140deg, rgba(255, 217, 134, 0.4), rgba(255, 209, 102, 0.16));
+}
+
+.cluster[data-color="anger"] .cluster__cloud {
+  background: linear-gradient(145deg, rgba(255, 79, 79, 0.38), rgba(255, 45, 45, 0.16));
+  color: #ffeeee;
+}
+
+.cluster[data-color="desire"] .cluster__cloud {
+  background: linear-gradient(140deg, rgba(127, 23, 52, 0.38), rgba(127, 23, 52, 0.16));
+  color: #f9ecf2;
+}
+
+.cluster[data-color="fear"] .sub-bubble {
+  background: radial-gradient(circle at 32% 28%, rgba(255, 246, 225, 0.8), transparent 70%),
+    rgba(255, 176, 59, 0.8);
+  border-color: rgba(255, 158, 28, 0.5);
+  color: #5f3200;
+}
+
+.cluster[data-color="sadness"] .sub-bubble {
+  background: radial-gradient(circle at 30% 30%, rgba(240, 250, 255, 0.7), transparent 65%), rgba(16, 74, 142, 0.8);
+  border-color: rgba(16, 74, 142, 0.45);
+  color: #f5f8ff;
+}
+
+.cluster[data-color="guilt"] .sub-bubble {
+  background: radial-gradient(circle at 35% 28%, rgba(255, 255, 245, 0.75), transparent 65%), rgba(255, 209, 102, 0.75);
+  border-color: rgba(255, 209, 102, 0.5);
+  color: #704f00;
+}
+
+.cluster[data-color="anger"] .sub-bubble {
+  background: radial-gradient(circle at 28% 28%, rgba(255, 238, 238, 0.75), transparent 70%), rgba(255, 45, 45, 0.78);
+  border-color: rgba(255, 45, 45, 0.55);
+  color: #fff1f1;
+}
+
+.cluster[data-color="desire"] .sub-bubble {
+  background: radial-gradient(circle at 30% 25%, rgba(255, 236, 244, 0.75), transparent 70%), rgba(127, 23, 52, 0.78);
+  border-color: rgba(127, 23, 52, 0.55);
+  color: #fceff4;
+}
+
+.cluster[data-color="depression"] .sub-bubble {
+  background: radial-gradient(circle at 32% 30%, rgba(246, 246, 248, 0.5), transparent 70%), rgba(77, 79, 88, 0.82);
+  border-color: rgba(77, 79, 88, 0.55);
+  color: #f5f6f8;
+}
+
+@media (max-width: 1200px) {
+  .clusters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 960px;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .clusters {
+    gap: 2.5rem;
+  }
+
+  .cluster__bubble {
+    width: min(100%, 300px);
+  }
+
+  .cluster__sub {
+    width: min(100%, 340px);
+  }
+
+  .cluster__cloud {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    padding: 1.5rem 1rem 1.35rem;
+    gap: 1.15rem;
+  }
+
+}
+
+@media (max-width: 600px) {
+  .clusters {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding: 0 1.25rem 3rem;
+  }
+
+  .cluster__bubble {
+    width: min(100%, 260px);
+  }
+
+  .cluster__sub {
+    width: 100%;
+  }
+
+  .sub-bubble {
+    --bubble-size: 90px;
+    font-size: 0.78rem;
+    padding: 0.5rem;
+  }
+}
